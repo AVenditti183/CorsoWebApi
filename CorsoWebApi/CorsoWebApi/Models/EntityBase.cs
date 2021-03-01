@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CorsoWebApi.Models
 {
-    public class Evento:EntityBase
+    public class EntityBase
     {
-        public string Nome { get; set; }
-        public DateTime Data { get; set; }
+        [Key]
+        public int Id { get; set; }
     }
 }

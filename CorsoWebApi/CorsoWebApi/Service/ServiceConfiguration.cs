@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CorsoWebApi.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,7 @@ namespace CorsoWebApi.Service
     {
         public static void AddService(this IServiceCollection service)
         {
+            service.AddScoped<IEFService<Evento>, EFService<Evento>>();
             service.AddScoped<EFBigliettoService > ();
             service.AddSingleton<BigliettoService>();
             service.AddScoped<IBigliettoService>(sp =>

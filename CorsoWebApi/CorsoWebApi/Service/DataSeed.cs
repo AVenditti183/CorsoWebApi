@@ -40,6 +40,22 @@ namespace CorsoWebApi.Service
                     NumeroSedia = "M4",
                     Posizione = Posizioni.Galleria
                 });
+
+            context.Eventi.Add(
+                new Evento
+                {
+                    Id = 1,
+                    Nome = "Evento 1",
+                    Data = new DateTime(2021, 3, 1, 10, 30, 0)
+                });
+
+            context.Eventi.Add(
+                new Evento
+                {
+                    Id = 2,
+                    Nome = "Evento 2",
+                    Data = new DateTime(2021, 3, 1, 10, 30, 0)
+                });
             context.SaveChanges();
         }
     }

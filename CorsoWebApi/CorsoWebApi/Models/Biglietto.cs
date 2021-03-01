@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace CorsoWebApi.Models
 {
-    public class Biglietto
+    public class Biglietto: EntityBase
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
         public string Nome { get; set; }
         [Required]

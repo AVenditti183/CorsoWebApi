@@ -45,6 +45,7 @@ namespace CorsoWebApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CorsoWebApi", Version = "v1" });
+                c.UseAllOfForInheritance();
             });
         }
 
