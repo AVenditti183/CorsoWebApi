@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CorsoWebApi.Service;
 
@@ -29,10 +30,11 @@ namespace CorsoWebApi
         {
             services.AddSingleton<BigliettoService>();
             
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+            
             services.AddSwaggerGen(c =>
             {
-                c.DescribeAllEnumsAsStrings();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CorsoWebApi", Version = "v1" });
             });
         }
