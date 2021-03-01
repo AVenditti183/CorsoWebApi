@@ -30,6 +30,7 @@ namespace CorsoWebApi
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
+                c.DescribeAllEnumsAsStrings();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CorsoWebApi", Version = "v1" });
             });
         }
