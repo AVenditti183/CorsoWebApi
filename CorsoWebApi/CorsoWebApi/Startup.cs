@@ -12,7 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using CorsoWebApi.Data;
 using CorsoWebApi.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace CorsoWebApi
 {
@@ -28,7 +30,14 @@ namespace CorsoWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<BigliettoService>();
+            services.AddService();
+            services.AddScoped<DataSeed>();
+            
+            services.AddDbContext<MyDB>(opt =>
+            {
+                opt.UseInMemoryDatabase("db");
+                opt.LogTo(Console.WriteLine);
+            });
             
             services.AddControllers()
                 .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -40,7 +49,7 @@ namespace CorsoWebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IServiceProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -59,6 +68,9 @@ namespace CorsoWebApi
             {
                 endpoints.MapControllers();
             });
+
+            var seed = provider.GetService<DataSeed>();
+            seed.Fill();
         }
     }
 }

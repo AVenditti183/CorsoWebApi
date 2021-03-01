@@ -8,6 +8,7 @@ namespace CorsoWebApi.Models
 {
     public class Biglietto
     {
+        [Key]
         public int Id { get; set; }
         [Required]
         public string Nome { get; set; }

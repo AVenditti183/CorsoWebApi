@@ -6,7 +6,7 @@ using CorsoWebApi.Models;
 
 namespace CorsoWebApi.Service
 {
-    public class BigliettoService
+    public class BigliettoService: IBigliettoService
     {
         private List<Biglietto> biglietti;
 
@@ -43,7 +43,7 @@ namespace CorsoWebApi.Service
         }
 
         public Biglietto[] Get() => biglietti.ToArray();
-        
+
         public Biglietto Add(Biglietto biglietto)
         {
             var oldId = biglietti.Select(o => o.Id).Max();
@@ -52,8 +52,8 @@ namespace CorsoWebApi.Service
             biglietti.Add(biglietto);
             return biglietto;
         }
-        
-        public Biglietto Update(Biglietto biglietto,int id)
+
+        public Biglietto Update(Biglietto biglietto, int id)
         {
             var oldBiglietto = biglietti.FirstOrDefault(o => o.Id == id);
             if (oldBiglietto is null)

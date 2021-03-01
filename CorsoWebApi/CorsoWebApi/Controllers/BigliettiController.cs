@@ -13,9 +13,9 @@ namespace CorsoWebApi.Controllers
     [ApiController]
     public class BigliettiController : ControllerBase
     {
-        private readonly BigliettoService service;
+        private readonly IBigliettoService service;
 
-        public BigliettiController(BigliettoService service)
+        public BigliettiController(IBigliettoService service)
         {
             this.service = service;
         }
