@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CorsoWebApi.Models;
+using CorsoWebApi.Service;
 
 namespace CorsoWebApi.Controllers
 {
@@ -12,43 +13,19 @@ namespace CorsoWebApi.Controllers
     [ApiController]
     public class BigliettiController : ControllerBase
     {
-        private static List<Biglietto> biglietti;
+        private readonly BigliettoService service;
 
-        public BigliettiController()
+        public BigliettiController(BigliettoService service)
         {
-            if (biglietti is null)
-            {
-                biglietti = new List<Biglietto>
-                {
-                    new Biglietto
-                    {
-                        Id = 1,
-                        Cognome = "Venditti",
-                        Nome = "Antonio",
-                        Costo = 10,
-                        DataEvento = new DateTime(2021, 6, 14),
-                        NumeroSedia = "M4",
-                        Posizione = Posizioni.Galleria
-                    },
-                    new Biglietto
-                    {
-                        Id = 2,
-                        Cognome = "Venditti",
-                        Nome = "Antonio",
-                        Costo = 10,
-                        DataEvento = new DateTime(2021, 6, 14),
-                        NumeroSedia = "M5",
-                        Posizione = Posizioni.Galleria
-                    }
-                };
-            }
+            this.service = service;
         }
 
         [HttpGet]
         [Produces(typeof(Biglietto[]))]
         public IActionResult Get()
         {
-            if (biglietti is null || biglietti.Count == 0)
+            var biglietti = service.Get();
+            if (biglietti is null || biglietti.Length == 0)
                 return NotFound();
             
             return Ok(biglietti.ToArray());
@@ -58,7 +35,7 @@ namespace CorsoWebApi.Controllers
         [Produces(typeof(Biglietto))]
         public IActionResult Get(int id)
         {
-            var biglietto = biglietti.FirstOrDefault(o => o.Id == id);
+            var biglietto = service.Get(id);
             if (biglietto is null)
                 return NotFound();
 
@@ -68,23 +45,22 @@ namespace CorsoWebApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]Biglietto biglietto)
         {
-            var oldId = biglietti.Select(o => o.Id).Max();
-            biglietto.Id = oldId + 1;
-            
-            biglietti.Add(biglietto);
+            var result = service.Add(biglietto);
 
-            return Created("Get", biglietto);
+            return Created("Get", result);
         }
         
         [HttpPut("{id}")]
         public IActionResult Put([FromRoute] int id,[FromBody] Biglietto biglietto)
         {
-            var oldBiglietto = biglietti.FirstOrDefault(o => o.Id == id);
-            if (oldBiglietto is null)
-                return BadRequest("Biglietto non trovato");
-
-            biglietti.Remove(oldBiglietto);
-            biglietti.Add(biglietto);
+            try
+            {
+                service.Update(biglietto, id);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
 
             return Ok();
         }
@@ -92,12 +68,28 @@ namespace CorsoWebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            var oldBiglietto = biglietti.FirstOrDefault(o => o.Id == id);
+            try
+            {
+                service.Delete(id);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok();
+        }
+        
+        [HttpPatch("{id}")]
+        public IActionResult ModificaNome([FromRoute] int id, [FromBody] ModificaBigliettoCognomeNome patch )
+        {
+            var oldBiglietto = service.Get(id);
             if (oldBiglietto is null)
                 return BadRequest("Biglietto non trovato");
-
-            biglietti.Remove(oldBiglietto);
-
+            oldBiglietto.Cognome = patch.Cognome;
+            oldBiglietto.Nome = patch.Nome;
+            service.Update(oldBiglietto,id);
+            
             return Ok();
         }
     }
