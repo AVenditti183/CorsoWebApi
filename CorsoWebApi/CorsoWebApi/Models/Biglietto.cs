@@ -25,6 +25,7 @@ namespace CorsoWebApi.Models
 
         public decimal ImportoAgenzia {get;set;}
         public int AgenziaId {get;set;}
+        public Agenzia Agenzia {get;set;}
     }
     
    

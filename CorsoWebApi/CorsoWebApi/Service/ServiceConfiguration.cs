@@ -12,7 +12,7 @@ namespace CorsoWebApi.Service
     {
         public static void AddService(this IServiceCollection service)
         {
-            service.AddScoped<IEFService<Evento>, EFService<Evento>>();
+            service.AddScoped(typeof(IEFService<>), typeof(EFService<>));
             service.AddScoped<EFBigliettoService > ();
             service.AddSingleton<BigliettoService>();
             service.AddScoped<IBigliettoService>(sp =>

@@ -15,7 +15,7 @@ namespace CorsoWebApi.Data
 
         public DbSet<Biglietto> Biglietti { get; set; }
         public DbSet<Evento> Eventi { get; set; }
-
+        public DbSet<Agenzia> Agenze { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Biglietto>().HasData(

@@ -1,23 +1,23 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CorsoWebApi.DTO;
 using CorsoWebApi.Models;
 using CorsoWebApi.Service;
-using CorsoWebApi.DTO;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace CorsoWebApi.Controllers
 {
-    public abstract class CRUDBaseController<TEntity,TMap> : ControllerBase
-    where TEntity:EntityBase
+    public abstract class CRUDBaseController<TEntity, TMap> : ControllerBase
+    where TEntity : EntityBase
     where TMap : DtoEntity
     {
         private readonly IEFService<TEntity> service;
         private readonly IMapper mapper;
-        public CRUDBaseController(IEFService<TEntity> service,IMapper mapper)
+
+        public CRUDBaseController(IEFService<TEntity> service, IMapper mapper)
         {
             this.service = service;
             this.mapper = mapper;
@@ -25,11 +25,22 @@ namespace CorsoWebApi.Controllers
 
         public virtual IActionResult Get()
         {
-            var entity = service.Get();
-            if (entity is null || entity.Length == 0)
+            var entity = service.Get()
+                .ProjectTo<TMap>(mapper.ConfigurationProvider)
+                .ToList();
+            if (entity is null || entity.Count() == 0)
                 return NotFound();
 
-            return Ok(entity.Select( o=> mapper.Map<TMap>(o)).ToArray());
+            return Ok(entity.ToArray());
+        }
+
+        protected virtual IActionResult Get(Expression<Func<TEntity, bool>> filter)
+        {
+            var entity = service.Get().Where(filter).ToList();
+            if (entity is null || entity.Count() == 0)
+                return NotFound();
+
+            return Ok(entity.Select(o => mapper.Map<TMap>(o)).ToArray());
         }
 
         public virtual IActionResult Get(int id)
@@ -46,7 +57,7 @@ namespace CorsoWebApi.Controllers
             var item = mapper.Map<TEntity>(entity);
             var result = service.Add(item);
 
-            return Created("Get", result);
+            return Created("Get", mapper.Map<TMap>(result));
         }
 
         public virtual IActionResult Put([FromRoute] int id, [FromBody] TMap entity)

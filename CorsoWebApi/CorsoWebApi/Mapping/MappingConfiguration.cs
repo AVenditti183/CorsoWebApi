@@ -40,6 +40,10 @@ namespace CorsoWebApi.Mapping
 
                     cfg.CreateMap<Evento,EventoDto>();
                     cfg.CreateMap<EventoDto,Evento>();
+
+                    cfg.CreateMap<Agenzia,AgenziaDto>();
+                    cfg.CreateMap<AgenziaDto,Agenzia>();
+
                         });
                 return configuration.CreateMapper();
         }

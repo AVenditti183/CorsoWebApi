@@ -19,11 +19,11 @@ namespace CorsoWebApi.Controllers
         { }
 
         [HttpGet]
-        [Produces(typeof(Evento[]))]
+        [Produces(typeof(EventoDto[]))]
         public override IActionResult Get() => base.Get();
 
         [HttpGet("{id}")]
-        [Produces(typeof(Evento))]
+        [Produces(typeof(EventoDto))]
         public override IActionResult Get(int id) => base.Get(id);
 
         [HttpPost]
