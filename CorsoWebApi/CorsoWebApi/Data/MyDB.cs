@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CorsoWebApi.Data
 {
+    
     public class MyDB :DbContext
     {
         public MyDB(DbContextOptions<MyDB> options):base(options)
@@ -18,6 +19,12 @@ namespace CorsoWebApi.Data
         public DbSet<Agenzia> Agenze { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Biglietto>()
+                .HasOne( o => o.Agenzia)
+                .WithMany( o => o.Biglietti)
+                .HasForeignKey( o=> o.AgenziaId)
+                .IsRequired();
+
             modelBuilder.Entity<Biglietto>().HasData(
                 new Biglietto
                 {

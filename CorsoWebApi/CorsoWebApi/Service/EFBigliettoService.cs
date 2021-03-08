@@ -22,8 +22,13 @@ namespace CorsoWebApi.Service
             return context.Biglietti.Find(id);
         }
 
-        public Biglietto[] Get() => context.Biglietti.ToArray();
-        
+        public Biglietto[] Get() 
+        {
+           return  context.Biglietti
+                .Include( o => o.Agenzia)
+                .AsSplitQuery()
+                .ToArray();
+        }
         public Biglietto Add(Biglietto biglietto)
         {
             var oldId = context.Biglietti.Select(o => o.Id).Max();

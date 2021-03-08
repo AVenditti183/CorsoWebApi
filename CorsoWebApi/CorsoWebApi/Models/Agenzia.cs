@@ -7,7 +7,7 @@ namespace CorsoWebApi.Models
     {
         public Agenzia()
         {
-            Biglietti = new List<Biglietto>();
+            Biglietti = new HashSet<Biglietto>();
         }
 
         [Required]
