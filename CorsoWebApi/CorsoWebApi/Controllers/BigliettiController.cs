@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CorsoWebApi.DTO;
 using CorsoWebApi.Models;
 using CorsoWebApi.Service;
+using AutoMapper;
 
 namespace CorsoWebApi.Controllers
 {
@@ -14,48 +16,56 @@ namespace CorsoWebApi.Controllers
     public class BigliettiController : ControllerBase
     {
         private readonly IBigliettoService service;
-
-        public BigliettiController(IBigliettoService service)
+        private readonly IMapper mapper;
+        public BigliettiController(IBigliettoService service, IMapper mapper)
         {
             this.service = service;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        [Produces(typeof(Biglietto[]))]
+        [Produces(typeof(BigliettoDto[]))]
         public IActionResult Get()
         {
             var biglietti = service.Get();
             if (biglietti is null || biglietti.Length == 0)
                 return NotFound();
-            
-            return Ok(biglietti.ToArray());
+
+            var results = biglietti.ToList().Select(o => mapper.Map<BigliettoDto>(o));
+
+            return Ok(results.ToArray());
         }
 
         [HttpGet("{id}")]
-        [Produces(typeof(Biglietto))]
+        [Produces(typeof(BigliettoDto))]
         public IActionResult Get(int id)
         {
             var biglietto = service.Get(id);
             if (biglietto is null)
                 return NotFound();
+            var result = mapper.Map<BigliettoDto>(biglietto);
 
-            return Ok(biglietto);
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Biglietto biglietto)
+        public IActionResult Post([FromBody]BigliettoDto biglietto)
         {
-            var result = service.Add(biglietto);
+            var item =  mapper.Map<Biglietto>(biglietto);
+
+            var result = service.Add(item);
 
             return Created("Get", result);
         }
         
         [HttpPut("{id}")]
-        public IActionResult Put([FromRoute] int id,[FromBody] Biglietto biglietto)
+        public IActionResult Put([FromRoute] int id,[FromBody] BigliettoDto biglietto)
         {
             try
             {
-                service.Update(biglietto, id);
+                var item = mapper.Map<Biglietto>(biglietto);
+
+                service.Update(item, id);
             }
             catch (ArgumentException e)
             {

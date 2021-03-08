@@ -10,5 +10,6 @@ namespace CorsoWebApi.Models
     {
         public string Nome { get; set; }
         public DateTime Data { get; set; }
+        public ICollection<Biglietto> Biglietti {get;set;}
     }
 }

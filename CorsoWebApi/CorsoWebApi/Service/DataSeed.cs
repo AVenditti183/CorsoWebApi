@@ -18,7 +18,7 @@ namespace CorsoWebApi.Service
         
         public void Fill()
         {
-            context.Biglietti.Add(new Biglietto
+            var biglietto1 = new Biglietto
             {
                 Id = 1,
                 Cognome = "Venditti",
@@ -27,7 +27,15 @@ namespace CorsoWebApi.Service
                 DataEvento = new DateTime(2021, 6, 14),
                 NumeroSedia = "M4",
                 Posizione = Posizioni.Galleria
-            });
+            };
+            biglietto1.Evento = new Evento
+            {
+                Id = 10,
+                Nome = "evento1",
+                Data = DateTime.Now,
+                Biglietti = new List<Biglietto> {biglietto1}
+            };
+            context.Biglietti.Add(biglietto1);
             
             context.Biglietti.Add(
                 new Biglietto
