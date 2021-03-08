@@ -37,6 +37,9 @@ namespace CorsoWebApi.Mapping
                                         Nome = src.Evento.Nome,
                                         Data = src.Evento.Data
                                     }));
+
+                    cfg.CreateMap<Evento,EventoDto>();
+                    cfg.CreateMap<EventoDto,Evento>();
                         });
                 return configuration.CreateMapper();
         }

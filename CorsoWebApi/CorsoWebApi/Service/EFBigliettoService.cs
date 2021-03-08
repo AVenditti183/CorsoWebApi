@@ -34,7 +34,7 @@ namespace CorsoWebApi.Service
             context.SaveChanges();
             return biglietto;
         }
-        
+
         public Biglietto Update(Biglietto biglietto,int id)
         {
             var bigliettoCorrente = context.Biglietti.AsNoTracking().FirstOrDefault(o => o.Id == id);

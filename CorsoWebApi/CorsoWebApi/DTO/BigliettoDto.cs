@@ -34,11 +34,4 @@ namespace CorsoWebApi.DTO
         public string Nome { get; set; }
         public DateTime Data { get; set; }
     }
-
-    public abstract class DtoEntity
-    {
-        [Key]
-        public int Id { get; set; }
-    }
-
 }

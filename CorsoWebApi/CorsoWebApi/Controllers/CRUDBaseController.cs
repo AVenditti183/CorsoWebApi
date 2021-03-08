@@ -6,17 +6,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using CorsoWebApi.Models;
 using CorsoWebApi.Service;
+using CorsoWebApi.DTO;
+using AutoMapper;
 
 namespace CorsoWebApi.Controllers
 {
-    public abstract class CRUDBaseController<TEntity> : ControllerBase
+    public abstract class CRUDBaseController<TEntity,TMap> : ControllerBase
     where TEntity:EntityBase
+    where TMap : DtoEntity
     {
         private readonly IEFService<TEntity> service;
-
-        public CRUDBaseController(IEFService<TEntity> service)
+        private readonly IMapper mapper;
+        public CRUDBaseController(IEFService<TEntity> service,IMapper mapper)
         {
             this.service = service;
+            this.mapper = mapper;
         }
 
         public virtual IActionResult Get()
@@ -25,7 +29,7 @@ namespace CorsoWebApi.Controllers
             if (entity is null || entity.Length == 0)
                 return NotFound();
 
-            return Ok(entity.ToArray());
+            return Ok(entity.Select( o=> mapper.Map<TMap>(o)).ToArray());
         }
 
         public virtual IActionResult Get(int id)
@@ -34,21 +38,23 @@ namespace CorsoWebApi.Controllers
             if (entity is null)
                 return NotFound();
 
-            return Ok(entity);
+            return Ok(mapper.Map<TMap>(entity));
         }
 
-        public virtual IActionResult Post([FromBody] TEntity entity)
+        public virtual IActionResult Post([FromBody] TMap entity)
         {
-            var result = service.Add(entity);
+            var item = mapper.Map<TEntity>(entity);
+            var result = service.Add(item);
 
             return Created("Get", result);
         }
 
-        public virtual IActionResult Put([FromRoute] int id, [FromBody] TEntity entity)
+        public virtual IActionResult Put([FromRoute] int id, [FromBody] TMap entity)
         {
             try
             {
-                service.Update(entity, id);
+                var item = mapper.Map<TEntity>(entity);
+                service.Update(item, id);
             }
             catch (ArgumentException e)
             {

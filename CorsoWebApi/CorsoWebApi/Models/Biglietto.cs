@@ -22,8 +22,12 @@ namespace CorsoWebApi.Models
         public string NumeroSedia { get; set; }
 
         public Evento Evento {get;set;}
+
+        public decimal ImportoAgenzia {get;set;}
+        public int AgenziaId {get;set;}
     }
     
+   
     public enum Posizioni
     {
         Platea,
